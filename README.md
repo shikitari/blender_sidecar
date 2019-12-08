@@ -1,6 +1,6 @@
 # Optimization of Blender for sidecar ( macOS + iPad )
 
-![screen capture](/images/logo.gif)
+![screen capture](https://github.com/shikitari/blender_sidecar/blob/master/images/logo.png)
 
 ## summry
 
@@ -113,7 +113,7 @@
 
 ### 2. Adjust pen pressure more easily. Can't  be set pressure in iPad
 
-![screen capture](/images/capture.gif)
+![screen capture](https://github.com/shikitari/blender_sidecar/blob/master/images/capture.gif)
 
 - develop addon that adjust pen-pressure easily
 - IN PREPARATION
