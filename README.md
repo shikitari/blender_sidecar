@@ -111,7 +111,7 @@
 
 ```
 
-### 2. Adjust pen pressure more easily. Can't  be set pressure in iPad
+### 2. Adjust pen pressure more easily. Can't set pressure in iPad
 
 ![screen capture](https://github.com/shikitari/blender_sidecar/blob/master/images/capture.gif)
 
