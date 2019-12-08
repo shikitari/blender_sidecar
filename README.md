@@ -2,7 +2,7 @@
 
 ![screen capture](https://github.com/shikitari/blender_sidecar/blob/master/images/logo.png)
 
-## summry
+## summary
 
 - To attempt to optimize Blender for sidecar (macOS + iPad).
 - I bought macbook so that using blender. but ...
