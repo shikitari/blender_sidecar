@@ -1,0 +1,76 @@
+--- a/source/blender/editors/sculpt_paint/paint_stroke.c
++++ b/source/blender/editors/sculpt_paint/paint_stroke.c
+@@ -37,6 +37,7 @@
+
+ #include "RNA_access.h"
+
++//#include "BKE_global.h"
+ #include "BKE_context.h"
+ #include "BKE_paint.h"
+ #include "BKE_brush.h"
+@@ -1335,6 +1336,8 @@ int paint_stroke_modal(bContext *C, wmOperator *op, const wmEvent *event)
+   bool first_modal = false;
+   bool redraw = false;
+   float pressure;
++  static bool is_tablet_prev_event = false;
++  static uint seqNo = 0;
+
+   if (event->type == INBETWEEN_MOUSEMOVE && !paint_tool_require_inbetween_mouse_events(br, mode)) {
+     return OPERATOR_RUNNING_MODAL;
+@@ -1345,6 +1348,56 @@ int paint_stroke_modal(bContext *C, wmOperator *op, const wmEvent *event)
+                   1.0f :
+                   WM_event_tablet_data(event, &stroke->pen_flip, NULL));
+
++//  if (G.debug & G_DEBUG_EVENTS) {
++//    printf("  ---\n");
++//    printf("  event->type:%d / event->val:%d \n", event->type, event->val);
++//    printf("  event->prevtype:%d / event->prevval:%d \n", event->prevtype, event->prevval);
++//    printf("  pressure:%ff / last_pressure:%ff \n", pressure, stroke->last_pressure);
++//    printf("  br->flag:%d \n", br->flag);
++//    printf("  is_tablet_current_event:%d \n",  (event->tablet_data) ? true : false);
++//    printf("  is_tablet_prev_event:%d \n", is_tablet_prev_event);
++//    printf("  seqNo:%d \n", seqNo);
++//  }
++
++  // If both the brush-mode is space and the brush-pressure is on.
++  if (br->flag & (BRUSH_SPACE) && br->flag & (BRUSH_ALPHA_PRESSURE | BRUSH_SIZE_PRESSURE)) {
++    // Sometime first press-event of pencil will be very high pressure so I will weaken pressure.
++    if (event->type == LEFTMOUSE && event->prevval == 1 && event->tablet_data) {
++      if (pressure >= 0.01f) {
++        pressure = 0.01f;
++      }
++    }
++
++    if ((event->type == LEFTMOUSE && event->val == KM_PRESS) || (event->type == LEFTMOUSE && event->val == KM_RELEASE)) {
++      seqNo = 0;
++    } else if (event->type == MOUSEMOVE && event->val == KM_PRESS) {
++       seqNo++;
++    }
++  }
++
++  // Dspite using only a pencil (no touching a screen, no clicking), a mouse-release-event without a tablet_data is occured.
++  // It's a just a guess, but If a pen is releasing from screen (is hovering), can't fetch pressure. Presumably It's a hardware constraint.
++  // So I will weaken pressure of mouse-left-release-event after mouse-event with tablet_data.
++  if (event->type == LEFTMOUSE && event->val == KM_RELEASE && is_tablet_prev_event) {
++    pressure = 0.0f;
++  }
++
++  // Somehow, last mouse-move-event hasn't tablet_data so ignore it.
++  // Moreover, pressure is 1.0f so I will weken it.
++  if (event->type == MOUSEMOVE && event->val == KM_PRESS && is_tablet_prev_event && !(event->tablet_data)) {
++    pressure = 0.0f;
++    is_tablet_prev_event = true;
++  } else {
++    // save previous is-tablet-flag.
++    is_tablet_prev_event = (event->tablet_data) ? true : false;
++  }
++  
++  if (seqNo <= 1) {
++    pressure = 0.0f;
++  }
++
++//  printf("  adjusted pressure:%ff \n", pressure);
++
+   paint_stroke_add_sample(p, stroke, event->mval[0], event->mval[1], pressure);
+   paint_stroke_sample_average(stroke, &sample_average);
+ 

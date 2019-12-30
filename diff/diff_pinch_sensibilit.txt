@@ -1,0 +1,10 @@
+--- a/intern/ghost/intern/GHOST_SystemCocoa.mm
++++ b/intern/ghost/intern/GHOST_SystemCocoa.mm
+@@ -1729,7 +1729,7 @@ - (void)windowWillClose:(NSNotification *)notification
+                                         GHOST_kTrackpadEventMagnify,
+                                         x,
+                                         y,
+-                                        [event magnification] * 125.0 + 0.1,
++                                        [event magnification] * 500.0 + 0.1,
+                                         0));
+     } break;
