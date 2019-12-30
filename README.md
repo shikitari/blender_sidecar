@@ -1,6 +1,6 @@
 # Optimization of Blender for sidecar ( macOS + iPad )
 
-![screen capture](https://github.com/shikitari/blender_sidecar/blob/master/images/logo.png)
+![screen capture](https://raw.githubusercontent.com/shikitari/blender_sidecar/master/images/logo.png)
 
 ## summary
 
